@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader</title>
+</head>
+<body>
+
+    {% if download_url or error_message %}
+        <div id="result-section">
+            {% if download_url %}
+                <a href="{{ download_url }}" download>Click here to download your video</a>
+            {% elif error_message %}
+                <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+        </div>
+    {% else %}
+
+    <h1>Welcome to the Video Downloader</h1>
+    <p>Paste the video link to download it.</p>
+
+    <div id="download-field">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" name="video_url" placeholder="Enter video URL here">
+            <button>Download</button>
+        </form>
+    </div>
+    <div id="quality-selection">
+        <label for="quality-options">Select Quality:</label>
+        <select name="quality-options" id="quality-options">
+            <option value="1080p">1080p (premium)</option>
+            <option value="720p" selected>720p</option>
+            <option value="480p">480p</option>
+            <option value="360p">360p</option>
+        </select>
+    </div>
+    {% endif %}
+</body>
+</html>

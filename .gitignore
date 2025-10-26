@@ -1,0 +1,41 @@
+# Arquivos do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente Virtual
+venv/
+env/
+ENV/
+virtualenv/
+Virtualenv/
+
+# Arquivos de Banco de Dados
+*.sqlite3
+db.sqlite3
+*.db
+
+# Arquivos de Configuração Sensíveis (ADICIONE SEUS ARQUIVOS SENSÍVEIS AQUI)
+# Exemplo: se você tiver um secrets.py
+# secrets.py
+# .env
+
+# Arquivos de Mídia e Estáticos coletados (se aplicável)
+/staticfiles/
+/mediafiles/
+
+# Logs
+*.log
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos do Editor/IDE
+.idea/
+.vscode/
+*.swp
+
+# Binários (FFmpeg) - Caminho relativo a partir de /downloader/
+bin/
+

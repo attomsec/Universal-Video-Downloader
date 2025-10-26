@@ -1,0 +1,175 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{# ---------------------------------------------------------------- #}
+{# NOVO ESTILO: Fundo azul escuro e janela central translúcida.    #}
+{# ---------------------------------------------------------------- #}
+
+{% block content %}
+    <div class="login-window">
+        {% element h1 %}
+            {% trans "Sign In" %}
+        {% endelement %}
+        {% if not SOCIALACCOUNT_ONLY %}
+            {% setvar link %}
+                <a href="{{ signup_url }}" class="text-blue-200 hover:text-blue-50">
+                {% endsetvar %}
+                {% setvar end_link %}
+                </a>
+            {% endsetvar %}
+            {% element p %}
+                {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
+            {% endelement %}
+            {% url 'account_login' as login_url %}
+            {% element form form=form method="post" action=login_url tags="entrance,login" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {% element fields form=form unlabeled=True %}
+                    {% endelement %}
+                    {{ redirect_field }}
+                {% endslot %}
+                {% slot actions %}
+                    {% element button type="submit" tags="prominent,login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition duration-200" %}
+                        {% trans "Sign In" %}
+                    {% endelement %}
+                {% endslot %}
+            {% endelement %}
+        {% endif %}
+        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+            {% element hr %}
+            {% endelement %}
+            {% element button_group vertical=True %}
+                {% if PASSKEY_LOGIN_ENABLED %}
+                    {% element button type="submit" form="mfa_login" id="passkey_login" tags="prominent,login,outline,primary" class="w-full mt-2 border-blue-600 text-blue-300 hover:bg-blue-600 hover:text-white" %}
+                        {% trans "Sign in with a passkey" %}
+                    {% endelement %}
+                {% endif %}
+                {% if LOGIN_BY_CODE_ENABLED %}
+                    {% element button href=request_login_code_url tags="prominent,login,outline,primary" class="w-full mt-2 border-blue-600 text-blue-300 hover:bg-blue-600 hover:text-white" %}
+                        {% trans "Send me a sign-in code" %}
+                    {% endelement %}
+                {% endif %}
+            {% endelement %}
+        {% endif %}
+        {% if SOCIALACCOUNT_ENABLED %}
+            <div class="mt-6">
+                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
+
+{% block extra_body %}
+    {{ block.super }}
+    
+    <style>
+        /* Define a fonte Inter (ou similar, se não tiver Tailwind) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        /* 1. Fundo Azul Escuro (Sem centralização) */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #1A2B3C; /* Azul Escuro */
+            color: white; /* Cor do texto padrão */
+        }
+
+        /* 2. O container .allauth-content (Não precisa mais de flex) */
+        .allauth-content {
+            width: 100%;
+            min-height: 100vh; /* Garante que o container preencha a altura da tela */
+            padding: 20px;
+            box-sizing: border-box; /* Assegura que o padding não estoure a largura */
+        }
+
+        /* 3. Janela Central Translucent (AGORA COM POSITION: FIXED) */
+        .login-window {
+            /* Centralização com Posição Fixa */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            /* Definição de Tamanho */
+            max-width: 420px;
+            width: 90%; /* Responsivo para telas menores */
+            
+            /* Estilo Visual */
+            padding: 2.5rem; /* Padding interno */
+            border-radius: 1rem; /* Cantos arredondados */
+            background-color: rgba(255, 255, 255, 0.05); /* Fundo branco bem transparente */
+            backdrop-filter: blur(10px); /* Efeito de desfoque */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Sombra */
+        }
+
+        /* Estilos adicionais para melhor contraste e aparência */
+        .login-window h1 {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Estiliza os inputs para combinar com o tema escuro */
+        .login-window input[type="text"], 
+        .login-window input[type="email"], 
+        .login-window input[type="password"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .login-window input[type="text"]:focus, 
+        .login-window input[type="email"]:focus, 
+        .login-window input[type="password"]:focus {
+            border-color: #3b82f6; /* Azul do foco */
+        }
+        
+        /* Placeholder mais visível */
+        .login-window input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* O link de signup/esqueceu senha */
+        .login-window a {
+            color: #93c5fd; /* Azul claro para links */
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .login-window a:hover {
+            color: #60a5fa;
+        }
+
+        /* A linha divisória (hr) */
+        .login-window hr {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Garante que o formulário não herde estilos de base desnecessários */
+        .login-window form {
+            margin-top: 1.5rem;
+        }
+        
+    </style>
+
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock %}
+
