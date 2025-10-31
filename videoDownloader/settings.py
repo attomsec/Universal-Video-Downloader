@@ -76,6 +76,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'videoDownloader.wsgi.application'
 
 
+#Email Configuration
+# https://docs.djangoproject.com/en/5.2/topics/email/
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+#Signup configuration
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -130,6 +140,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'styles',
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

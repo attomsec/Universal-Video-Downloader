@@ -1,41 +1,82 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Downloader</title>
-</head>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    </head>
 <body>
 
-    {% if download_url or error_message %}
-        <div id="result-section">
-            {% if download_url %}
-                <a href="{{ download_url }}" download>Click here to download your video</a>
-            {% elif error_message %}
-                <p style="color: red;">{{ error_message }}</p>
-            {% endif %}
+    <nav class="menubar">
+        <div class="menubar-brand">
+            <a href="/">Universal Downloader</a>
         </div>
-    {% else %}
+        <div class="menubar-links">
+            <ul>
+                {% if request.user.is_authenticated %}
+                    <li><span>Olá, {{ request.user.username }}!</span></li>
+                    <li><a href="{% url 'account_logout' %}">Sair</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">Entrar</a></li>
+                    <li><a href="{% url 'account_signup' %}">Cadastrar</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
 
-    <h1>Welcome to the Video Downloader</h1>
-    <p>Paste the video link to download it.</p>
+    <div class="content-wrapper">
 
-    <div id="download-field">
-        <form action="" method="POST">
-            {% csrf_token %}
-            <input type="text" name="video_url" placeholder="Enter video URL here">
-            <button>Download</button>
-        </form>
+    <div class="main-container">
+
+        {% if download_url or error_message %}
+            <div id="result-section">
+                {% if download_url %}
+                    <a href="{{ download_url }}" download target="_blank">Click here to download your video</a>
+                {% elif error_message %}
+                    <p>{{ error_message }}</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <h1>Download any video on internet</h1>
+            <p>Paste the video link to download it.</p>
+
+            <div id="download-field">
+                <form action="" method="POST" id="form">
+                    {% csrf_token %}
+                    
+                    <input type="text" name="video_url" placeholder="Enter video URL here" required><br>
+                    
+                    <div class="radio-group">
+                        <span>
+                            <input type="radio" id="audio-only" name="download-type" value="audio">
+                            <label for="audio-only">Audio only</label>
+                        </span>
+                        <span>
+                            <input type="radio" id="video" name="download-type" value="video" checked>
+                            <label for="video">Video</label>
+                        </span>
+                    </div>
+                    
+                    <label for="quality-options">Select Quality:</label>
+                    <select name="quality-options" id="quality-options">
+                        <option value="1080p">1080p (premium)</option>
+                        <option value="720p" selected>720p</option>
+                        <option value="480p">480p</option>
+                        <option value="360p">360p</option>
+                    </select>
+
+                    <button id="submit-button">Download</button>
+                </form>
+            </div>
+            
+            <div id="status-message"></div>
+
+        {% endif %}
+
     </div>
-    <div id="quality-selection">
-        <label for="quality-options">Select Quality:</label>
-        <select name="quality-options" id="quality-options">
-            <option value="1080p">1080p (premium)</option>
-            <option value="720p" selected>720p</option>
-            <option value="480p">480p</option>
-            <option value="360p">360p</option>
-        </select>
-    </div>
-    {% endif %}
-</body>
+   </div> 
+    </body>
 </html>
