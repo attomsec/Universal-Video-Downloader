@@ -39,3 +39,5 @@ Thumbs.db
 # Binários (FFmpeg) - Caminho relativo a partir de /downloader/
 bin/
 
+#Midia baixada pelo usuário
+media/

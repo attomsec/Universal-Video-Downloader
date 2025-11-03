@@ -29,6 +29,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+#Media configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+FFMPEG_BIN_PATH = BASE_DIR / 'bin'
+
 # Application definition
 
 INSTALLED_APPS = [
