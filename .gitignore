@@ -41,3 +41,6 @@ bin/
 
 #Midia baixada pelo usuário
 media/
+
+# Arquivo de Segredos
+.env
