@@ -59,5 +59,5 @@ Este projeto foi desenhado para ir "além do CRUD", focando em uma arquitetura d
 #### 1. Clonar o Repositório
 
 ```bash
-git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
-cd SEU-REPOSITORIO
+git clone [https://github.com/attomsec/Universal-Video-Downloader.git](https://github.com/attomsec/Universal-Video-Downloader.git)
+cd Universal-Video-Downloader
