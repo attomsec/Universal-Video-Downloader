@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Downloader</title>
+    <title>Universal Video Downloader</title>
     <link rel="stylesheet" href="{% static 'home.css' %}">
     </head>
 <body>
 
     <nav class="menubar">
         <div class="menubar-brand">
-            <a href="/">Universal Downloader</a>
+            <a href="/">Universal Video Downloader</a>
         </div>
         <div class="menubar-links">
             <ul>
@@ -27,56 +27,146 @@
     </nav>
 
     <div class="content-wrapper">
-
     <div class="main-container">
 
-        {% if download_url or error_message %}
-            <div id="result-section">
-                {% if download_url %}
-                    <a href="{{ download_url }}" download target="_blank">Click here to download your video</a>
-                {% elif error_message %}
-                    <p>{{ error_message }}</p>
-                {% endif %}
-            </div>
+        <h1>Download any video on internet</h1>
+        <p>Paste the video link to download it.</p>
 
-        {% else %}
-            <h1>Download any video on internet</h1>
-            <p>Paste the video link to download it.</p>
+        <div id="status-message"></div>
 
-            <div id="download-field">
-                <form action="" method="POST" id="form">
-                    {% csrf_token %}
-                    
-                    <input type="text" name="video_url" placeholder="Enter video URL here" required><br>
-                    
-                    <div class="radio-group">
-                        <span>
-                            <input type="radio" id="audio-only" name="download-type" value="audio">
-                            <label for="audio-only">Audio only</label>
-                        </span>
-                        <span>
-                            <input type="radio" id="video" name="download-type" value="video" checked>
-                            <label for="video">Video</label>
-                        </span>
-                    </div>
-                    
-                    <label for="quality-options">Select Quality:</label>
-                    <select name="quality-options" id="quality-options">
-                        <option value="1080p">1080p (premium)</option>
-                        <option value="720p" selected>720p</option>
-                        <option value="480p">480p</option>
-                        <option value="360p">360p</option>
-                    </select>
+        <div id="download-field">
+            <form action="" method="POST" id="form"> 
+                {% csrf_token %}
+                
+                <input type="text" id="video_url_input" name="video_url" placeholder="Enter video URL here" required><br>
+                
+                <div class="radio-group">
+                    <span>
+                        <input type="radio" id="audio-only" name="download-type" value="audio">
+                        <label for="audio-only">Audio only</label>
+                    </span>
+                    <span>
+                        <input type="radio" id="video" name="download-type" value="video" checked>
+                        <label for="video">Video</label>
+                    </span>
+                </div>
+                
+                <label for="quality-options">Select Quality:</label>
+                <select name="quality-options" id="quality-options">
+                    <option value="1080p">1080p (premium)</option>
+                    <option value="720p" selected>720p</option>
+                    <option value="480p">480p</option>
+                    <option value="360p">360p</option>
+                </select>
 
-                    <button id="submit-button">Download</button>
-                </form>
-            </div>
-            
-            <div id="status-message"></div>
-
-        {% endif %}
-
-    </div>
+                <button id="submit-button">Download</button>
+            </form>
+        </div>
+        
+        </div>
    </div> 
-    </body>
+    
+   <script>
+        // Encontre os elementos da página
+        const downloadForm = document.getElementById('form');
+        const statusDiv = document.getElementById('status-message');
+        const submitButton = document.getElementById('submit-button');
+        
+        // Intercepte o envio (submit) do formulário
+        downloadForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            // Desabilite o botão e mostre "Enviando..."
+            submitButton.disabled = true;
+            submitButton.innerText = 'Enviando...';
+            statusDiv.innerHTML = '<p class="status-pending">Enviando para a fila de processamento...</p>';
+
+            // Pegue os dados do formulário
+            const url = document.getElementById('video_url_input').value;
+            const quality = document.getElementById('quality-options').value;
+            const downloadType = document.querySelector('input[name="download-type"]:checked').value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            try {
+                // Chame sua API (POST)
+                const response = await fetch('/api/v1/jobs/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken // O Django precisa disso
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        quality: quality,
+                        download_type: downloadType
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Falha ao criar a tarefa.');
+                }
+
+                const job = await response.json(); // Resposta: {"id": 1, "status": "PENDENTE"}
+                
+                // Inicie o "poller" para checar o status
+                statusDiv.innerHTML = `<p class="status-processing">Tarefa ${job.id} está na fila. Processando...</p>`;
+                pollJobStatus(job.id);
+
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="status-error">Erro: ${error.message}</p>`;
+                submitButton.disabled = false;
+                submitButton.innerText = 'Download';
+            }
+        });
+
+        // Função que checa o status (o "Poller")
+        function pollJobStatus(jobId) {
+            const intervalId = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/v1/jobs/${jobId}/`);
+                    if (!response.ok) {
+                        throw new Error('Não foi possível verificar o status.');
+                    }
+                    
+                    const job = await response.json();
+
+                    if (job.status === 'COMPLETED') {
+                        // SUCESSO!
+                        clearInterval(intervalId); // Para de checar
+                        statusDiv.innerHTML = `
+                            <p class="status-success"><strong>Download Concluído!</strong></p>
+                            <a href="${job.s3_link}" target="_blank" class="button-download">
+                                Baixar Agora
+                            </a>
+                        `;
+                        submitButton.disabled = false;
+                        submitButton.innerText = 'Download';
+                    
+                    } else if (job.status === 'ERRO') {
+                        // FALHA!
+                        clearInterval(intervalId); // Para de checar
+                        statusDiv.innerHTML = `
+                            <p class="status-error"><strong>Erro ao processar o vídeo.</strong>
+                            (Por favor, tente novamente)
+                            </p>
+                        `;
+                        submitButton.disabled = false;
+                        submitButton.innerText = 'Download';
+                    
+                    } else {
+                        // Ainda 'PENDENTE' ou 'PROCESSANDO'...
+                        statusDiv.innerHTML = `<p class="status-processing">Status da Tarefa: ${job.status}...</p>`;
+                    }
+
+                } catch (error) {
+                    clearInterval(intervalId);
+                    statusDiv.innerHTML = `<p class="status-error">Erro ao checar status: ${error.message}</p>`;
+                    submitButton.disabled = false;
+                    submitButton.innerText = 'Download';
+                }
+            }, 3000); // Checa a cada 3 segundos
+        }
+   </script>
+</body>
 </html>

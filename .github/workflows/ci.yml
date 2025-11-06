@@ -10,7 +10,7 @@ on:
 # Tarefas
 jobs:
   build:
-    # O servidor virtual que o GitHub vai usar (um Ubuntu novinho)
+    # O servidor virtual que o GitHub vai usar
     runs-on: ubuntu-latest
      
     steps:
