@@ -77,7 +77,7 @@ def _execute_download(video_url, ydl_opts_dict):
             
             print(f"[V5 DEBUG] Download local concluído: {local_filepath}")
 
-        # UPLOAD (O Ponto de Falha Provável)
+        # UPLOAD 
         filename = os.path.basename(local_filepath)
         s3_path = f'downloads/{filename}' 
         public_url = None

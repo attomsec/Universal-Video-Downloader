@@ -1,6 +1,6 @@
 # API de Processamento de Mídia (Python, Celery, AWS S3 & RDS)
 
-![Status do CI](https://github.com/SEU-USUARIO/SEU-REPOSITORIO/actions/workflows/ci.yml/badge.svg)
+![Status do CI](https://github.com/attomsec/Universal-Video-Downloader/actions/workflows/ci.yml/badge.svg)
 
 Uma API RESTful de back-end de alta performance, construída em Python e Django, para processamento assíncrono de mídia. O projeto é desenhado como um serviço desacoplado, capaz de receber requisições de download, processá-las em segundo plano usando Celery, e fazer o upload do resultado final diretamente para um bucket AWS S3.
 
@@ -65,7 +65,7 @@ Para a execução bem-sucedida da aplicação, os seguintes componentes de softw
 Primeiro, clone o repositório, configure o ambiente virtual e instale as dependências:
 
 ```bash
-git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
+git clone [https://github.com/attomsec/Universal-Vide-Downloadergit](https://github.com/attomsec/Universal-Vide-Downloadergit)
 cd SEU-REPOSITORIO
 
 # Crie e ative o ambiente virtual
