@@ -65,8 +65,8 @@ Para a execução bem-sucedida da aplicação, os seguintes componentes de softw
 Primeiro, clone o repositório, configure o ambiente virtual e instale as dependências:
 
 ```bash
-git clone [https://github.com/attomsec/Universal-Vide-Downloadergit](https://github.com/attomsec/Universal-Vide-Downloadergit)
-cd SEU-REPOSITORIO
+git clone [https://github.com/attomsec/Universal-Video-Downloader.git](https://github.com/attomsec/Universal-Video-Downloader.git)
+cd Universal-Video-Downloader
 
 # Crie e ative o ambiente virtual
 python -m venv venv
@@ -76,4 +76,6 @@ source venv/bin/activate  # (Linux/Mac)
 # Instale as dependências
 pip install -r requirements.txt
 
+
+[EM BREVE INSTRUÇÕES DETALHADAS]
 

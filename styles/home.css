@@ -173,18 +173,78 @@ button:hover {
     background-color: #2b6cb0; /* Azul mais escuro no hover */
 }
 
-/* --- Seção de Resultados (pós-envio) --- */
-#result-section a {
-    color: #63b3ed; /* Link azul claro */
-    font-size: 1.2em;
-    font-weight: bold;
-    text-decoration: none;
+/* --- Estilo do Botão de Submit (Melhoria) --- */
+button:disabled {
+    background-color: #5a6268; /* Cinza quando desabilitado */
+    cursor: not-allowed;
 }
-#result-section a:hover {
+
+/* --- Seção de Status e Download (JavaScript) --- */
+
+/* O container para as mensagens "Processando...", "Erro...", etc. */
+#status-message {
+    margin-top: 25px; /* Mesmo espaçamento do formulário */
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* "Link de Download gerado!" */
+.status-success {
+    color: #48bb78; /* Verde claro */
+    font-weight: bold;
+}
+
+/* "Erro ao processar o vídeo." */
+.status-error {
+    color: #e53e3e; /* Vermelho (do seu estilo antigo) */
+    font-weight: bold;
+}
+
+/* "Enviando..." ou "Processando..." */
+.status-pending,
+.status-processing {
+    color: #63b3ed; /* Azul claro (do seu estilo antigo) */
+    font-weight: 500;
+}
+
+
+/* --- O Botão "Baixar Agora" (O que você pediu) --- */
+
+.button-download {
+    display: block; /* Ocupa a largura toda, como o <button> */
+    width: 100%;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    
+    padding: 12px; /* Exatamente como o <button> original */
+    margin-top: 15px; /* Espaço entre o texto e o botão */
+
+    background-color: #28a745; /* Verde de sucesso */
+    color: white;
+    font-weight: bold; /* Exatamente como o <button> original */
+    font-size: 1rem;   /* Exatamente como o <button> original */
+    
+    border: none;
+    border-radius: 5px; /* Exatamente como o <button> original */
+    text-decoration: none; /* Remove o sublinhado do link <a> */
+    text-align: center;
+    
+    transition: background-color 0.2s ease-in-out;
+}
+
+.button-download:hover {
+    background-color: #218838; /* Verde mais escuro no hover */
+    color: white; /* Garante que o texto fique branco */
+}
+
+.reset-link {
+    display: block; /* Para ficar abaixo do botão */
+    margin-top: 15px; /* Espaço entre o botão verde e ele */
+    font-size: 0.9rem; /* Texto pequeno */
+    color: #a0aec0; /* Cor cinza-claro (a mesma do seu parágrafo <p>) */
     text-decoration: underline;
+    transition: color 0.2s ease;
 }
-#result-section p {
-    color: #e53e3e; /* Vermelho para erro */
-    font-weight: bold;
-    font-size: 1.2em;
+
+.reset-link:hover {
+    color: #ffffff; /* Branco no hover */
 }

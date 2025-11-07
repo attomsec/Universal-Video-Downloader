@@ -104,13 +104,13 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.detail || 'Falha ao criar a tarefa.');
+                    throw new Error(errorData.detail || 'Falha ao gerar o link.');
                 }
 
                 const job = await response.json(); // Resposta: {"id": 1, "status": "PENDENTE"}
                 
                 // Inicie o "poller" para checar o status
-                statusDiv.innerHTML = `<p class="status-processing">Tarefa ${job.id} está na fila. Processando...</p>`;
+                statusDiv.innerHTML = `<p class="status-processing">Gerando link de download. Processando...</p>`;
                 pollJobStatus(job.id);
 
             } catch (error) {
@@ -135,13 +135,14 @@
                         // SUCESSO!
                         clearInterval(intervalId); // Para de checar
                         statusDiv.innerHTML = `
-                            <p class="status-success"><strong>Download Concluído!</strong></p>
+                            <p class="status-success"><strong>Link de Download gerado!</strong></p>
                             <a href="${job.s3_link}" target="_blank" class="button-download">
                                 Baixar Agora
                             </a>
+                            <a href="/" class="reset-link">Baixar outro vídeo</a>
                         `;
-                        submitButton.disabled = false;
-                        submitButton.innerText = 'Download';
+                        submitButton.disabled = true;
+                        submitButton.innerText = 'Link gerado';
                     
                     } else if (job.status === 'ERRO') {
                         // FALHA!
