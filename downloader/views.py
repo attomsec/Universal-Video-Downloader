@@ -6,7 +6,7 @@ from django.conf import settings
 from .utils import download_handler
 from .tasks import process_download_job
 
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, permissions
 from .models import DownloadJob
 from .serializers import DownloadJobSerializer
 
@@ -15,17 +15,23 @@ class DownloadJobViewSet(viewsets.ModelViewSet,
                         mixins.ListModelMixin,
                         viewsets.GenericViewSet):
 
-    queryset = DownloadJob.objects.all().order_by('-created_at')
+    # queryset = DownloadJob.objects.all().order_by('-created_at')
     serializer_class = DownloadJobSerializer
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return DownloadJob.objects.filter(user=user).order_by('-created_at')
 
     def perform_create(self, serializer):
         # 1. Salva o Job com url, quality, e type no banco
-        job = serializer.save()
+        job = serializer.save(user=self.request.user)
 
         # 2. Enfileira a tarefa no Celery
         process_download_job.delay(job.id) 
 
-        print(f"Job {job.id} enfileirado.")
+        print(f"Job {job.id} enfileirado para o usuário: {self.request.user.username}")
 
 
 
